@@ -15,3 +15,10 @@ var alreadyRegisteredError = microerror.New("already registered")
 func IsAlreadyRegistered(err error) bool {
 	return microerror.Cause(err) == alreadyRegisteredError
 }
+
+var invalidConfigError = microerror.New("invalid config")
+
+// IsInvalidConfig asserts invalidConfigError.
+func IsInvalidConfig(err error) bool {
+	return microerror.Cause(err) == invalidConfigError
+}

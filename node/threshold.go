@@ -14,7 +14,8 @@ func (o *Object) Threshold() float64 {
 	return o.threshold
 }
 
-// TODO
+// TODO update threshold using node resistance
+// TODO random node resistance has to be assigned at node boot
 func (o *Object) updateThreshold(ctx context.Context) error {
 	o.mutex.Lock()
 	defer o.mutex.Unlock()

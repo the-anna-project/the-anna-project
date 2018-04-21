@@ -8,10 +8,7 @@ import (
 	"github.com/the-anna-project/the-anna-project/spec/peer"
 )
 
-// TODO
-//
-//     network creates new nodes
-//
+// TODO network creates new nodes
 type Interface interface {
 	Deregister(ctx context.Context, n node.Interface, a action.Interface) error
 	// RandomPeers returns a random, arbitrary list of peer information

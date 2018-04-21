@@ -11,7 +11,8 @@ func (o *Object) Energy() float64 {
 	return o.energy
 }
 
-// TODO
+// TODO update energy using node resistance
+// TODO random node resistance has to be assigned at node boot
 func (o *Object) updateEnergy(ctx context.Context) error {
 	o.mutex.Lock()
 	defer o.mutex.Unlock()

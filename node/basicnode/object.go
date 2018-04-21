@@ -10,9 +10,13 @@ import (
 	"github.com/the-anna-project/the-anna-project/network"
 	"github.com/the-anna-project/the-anna-project/peer"
 	"github.com/the-anna-project/the-anna-project/random"
+	"github.com/the-anna-project/the-anna-project/signal"
 )
 
 type Config struct {
+	// Action is the business logic implementation the node executes when being
+	// activated, if any. Nodes might not be configured with an action when they
+	// only serve signal dispatching purposes within the network graphs.
 	Action  action.Interface
 	Logger  micrologger.Logger
 	Network network.Interface
@@ -27,10 +31,12 @@ type Object struct {
 
 	alreadyBooted   bool
 	alreadyShutDown bool
+	bufferedSignals map[string]signal.Interface
 	energy          float64
 	id              string
 	mutex           sync.Mutex
-	peers           []peer.Interface
+	inputPeers      []peer.Interface
+	outputPeers     []peer.Interface
 	shutdown        chan struct{}
 	threshold       float64
 }
@@ -54,10 +60,12 @@ func New(config Config) (*Object, error) {
 
 		alreadyBooted:   false,
 		alreadyShutDown: false,
+		bufferedSignals: map[string]signal.Interface{},
 		energy:          0,
 		id:              "",
 		mutex:           sync.Mutex{},
-		peers:           nil,
+		inputPeers:      nil,
+		outputPeers:     nil,
 		shutdown:        make(chan struct{}, 1),
 		threshold:       0,
 	}

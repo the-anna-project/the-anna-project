@@ -1,4 +1,4 @@
-package basicsignal
+package waitsignal
 
 import (
 	"github.com/the-anna-project/the-anna-project/signal"

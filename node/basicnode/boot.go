@@ -2,6 +2,7 @@ package basicnode
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/giantswarm/microerror"
@@ -12,15 +13,16 @@ const (
 )
 
 func (o *Object) Boot(ctx context.Context) error {
-	o.mutex.Lock()
-	defer o.mutex.Unlock()
-
-	if o.alreadyBooted {
-		return nil
-	}
-	o.alreadyBooted = true
-
 	var err error
+
+	{
+		o.mutex.Lock()
+		if o.alreadyBooted {
+			o.mutex.Unlock()
+			return nil
+		}
+		o.mutex.Unlock()
+	}
 
 	{
 		o.energy, err = o.random.NewFloat64(ctx, 0, 1)
@@ -35,17 +37,57 @@ func (o *Object) Boot(ctx context.Context) error {
 		if err != nil {
 			return microerror.Mask(err)
 		}
-		o.peers, err = o.network.RandomPeers(ctx)
+	}
+
+	{
+		err = o.network.CreateNode(ctx, o, o.action)
 		if err != nil {
 			return microerror.Mask(err)
 		}
 	}
 
 	{
-		err = o.network.Register(ctx, o, o.action)
-		if err != nil {
-			return microerror.Mask(err)
-		}
+		go func() {
+			for {
+				select {
+				case <-ctx.Done():
+					return
+				case <-o.shutdown:
+					return
+				case <-time.After(oneMinute):
+					peers, err := o.network.SearchInputPeers(ctx, o)
+					if err != nil {
+						o.logger.Log("level", "warning", "message", "searching input peers failed", "stack", fmt.Sprintf("%#v", err))
+					}
+
+					o.mutex.Lock()
+					o.inputPeers = peers
+					o.mutex.Unlock()
+				}
+			}
+		}()
+	}
+
+	{
+		go func() {
+			for {
+				select {
+				case <-ctx.Done():
+					return
+				case <-o.shutdown:
+					return
+				case <-time.After(oneMinute):
+					peers, err := o.network.SearchOutputPeers(ctx, o)
+					if err != nil {
+						o.logger.Log("level", "warning", "message", "searching output peers failed", "stack", fmt.Sprintf("%#v", err))
+					}
+
+					o.mutex.Lock()
+					o.outputPeers = peers
+					o.mutex.Unlock()
+				}
+			}
+		}()
 	}
 
 	{
@@ -65,6 +107,12 @@ func (o *Object) Boot(ctx context.Context) error {
 				}
 			}
 		}()
+	}
+
+	{
+		o.mutex.Lock()
+		o.alreadyBooted = true
+		o.mutex.Unlock()
 	}
 
 	return nil

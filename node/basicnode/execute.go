@@ -18,7 +18,6 @@ func (o *Object) Execute(ctx context.Context, sig signal.Interface) (signal.Inte
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
-
 		err = o.updateThreshold(ctx)
 		if err != nil {
 			return nil, microerror.Mask(err)

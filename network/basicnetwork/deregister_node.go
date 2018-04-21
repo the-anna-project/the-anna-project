@@ -8,6 +8,6 @@ import (
 )
 
 // TODO implement node and action deregistration
-func (o *Object) Deregister(ctx context.Context, n node.Interface, a action.Interface) error {
+func (o *Object) DeregisterNode(ctx context.Context, n node.Interface, a action.Interface) error {
 	return nil
 }

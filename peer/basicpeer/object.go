@@ -1,12 +1,18 @@
 package basicpeer
 
-import "github.com/giantswarm/microerror"
+import (
+	"sync"
+
+	"github.com/giantswarm/microerror"
+)
 
 type Config struct {
 	NodeID string
 }
 
 type Object struct {
+	mutex sync.Mutex
+
 	nodeID string
 }
 
@@ -16,6 +22,8 @@ func New(config Config) (*Object, error) {
 	}
 
 	o := &Object{
+		mutex: sync.Mutex{},
+
 		nodeID: config.NodeID,
 	}
 

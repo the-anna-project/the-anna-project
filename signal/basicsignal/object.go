@@ -1,4 +1,4 @@
-package stopsignal
+package basicsignal
 
 import (
 	"github.com/the-anna-project/the-anna-project/peer"

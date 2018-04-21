@@ -1,4 +1,4 @@
-package stopsignal
+package nodesignal
 
 import (
 	"github.com/the-anna-project/the-anna-project/spec/peer"

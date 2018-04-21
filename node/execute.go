@@ -4,11 +4,12 @@ import (
 	"context"
 
 	"github.com/giantswarm/microerror"
-	"github.com/the-anna-project/the-anna-project/signal"
+
+	"github.com/the-anna-project/the-anna-project/spec/signal"
 )
 
 // Execute processes the business logic of the node. This is to update the
-// energy and theshold as well as executing the node's action, if any.
+// energy and threshold as well as executing the node's action, if any.
 func (o *Object) Execute(ctx context.Context, sig signal.Interface) (signal.Interface, error) {
 	var err error
 

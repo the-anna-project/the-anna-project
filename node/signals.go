@@ -3,7 +3,7 @@ package node
 import (
 	"context"
 
-	"github.com/the-anna-project/the-anna-project/signal"
+	"github.com/the-anna-project/the-anna-project/spec/signal"
 )
 
 func (o *Object) Signals(ctx context.Context, sig signal.Interface) ([]signal.Interface, error) {

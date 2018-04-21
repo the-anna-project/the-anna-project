@@ -6,10 +6,10 @@ import (
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 
-	"github.com/the-anna-project/the-anna-project/action"
-	"github.com/the-anna-project/the-anna-project/network"
-	"github.com/the-anna-project/the-anna-project/peer"
-	"github.com/the-anna-project/the-anna-project/random"
+	"github.com/the-anna-project/the-anna-project/spec/action"
+	"github.com/the-anna-project/the-anna-project/spec/network"
+	"github.com/the-anna-project/the-anna-project/spec/peer"
+	"github.com/the-anna-project/the-anna-project/spec/random"
 )
 
 type Config struct {
@@ -25,12 +25,14 @@ type Object struct {
 	network network.Interface
 	random  random.Interface
 
-	booted    bool
-	energy    float64
-	id        string
-	mutex     sync.Mutex
-	peers     []peer.Interface
-	threshold float64
+	alreadyBooted   bool
+	alreadyShutDown bool
+	energy          float64
+	id              string
+	mutex           sync.Mutex
+	peers           []peer.Interface
+	shutdown        chan struct{}
+	threshold       float64
 }
 
 func New(config Config) (*Object, error) {
@@ -50,12 +52,14 @@ func New(config Config) (*Object, error) {
 		network: config.Network,
 		random:  config.Random,
 
-		booted:    false,
-		energy:    0,
-		id:        "",
-		mutex:     sync.Mutex{},
-		peers:     nil,
-		threshold: 0,
+		alreadyBooted:   false,
+		alreadyShutDown: false,
+		energy:          0,
+		id:              "",
+		mutex:           sync.Mutex{},
+		peers:           nil,
+		shutdown:        make(chan struct{}, 1),
+		threshold:       0,
 	}
 
 	return o, nil

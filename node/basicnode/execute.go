@@ -4,32 +4,43 @@ import (
 	"context"
 
 	"github.com/giantswarm/microerror"
-
 	"github.com/the-anna-project/the-anna-project/signal"
+	"github.com/the-anna-project/the-anna-project/signal/stopsignal"
 )
 
-// Execute processes the business logic of the node. This is to update the
-// energy and threshold as well as executing the node's action, if any.
-func (o *Object) Execute(ctx context.Context, sig signal.Interface) (signal.Interface, error) {
+// Execute checks if the node should be activated or not. In case the node is
+// being activated it will update its energy and threshold levels. When this is
+// done the node's action will be executed in case there is any configured. The
+// returned signals indicate eventual action results and decisions of the node.
+// In case the node should not be activated list only containing a stop signal
+// is returned, otherwhise the node returns signals supposed to be dispatched.
+func (o *Object) Execute(ctx context.Context, sigs []signal.Interface) ([]signal.Interface, error) {
 	var err error
+
+	// TODO consider random resistance for activation calculation
+	// TODO respect signal injection
+	if o.Energy() < o.Threshold() {
+		return []signal.Interface{&stopsignal.Object{}}, nil
+	}
 
 	{
 		err = o.updateEnergy(ctx)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
+
 		err = o.updateThreshold(ctx)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
 	}
 
-	if o.action != nil {
-		sig, err = o.action.Execute(ctx, sig)
+	if o.Action() != nil {
+		sigs, err = o.Action().Execute(ctx, sigs)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
 	}
 
-	return sig, nil
+	return sigs, nil
 }

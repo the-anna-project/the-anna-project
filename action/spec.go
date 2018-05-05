@@ -7,6 +7,6 @@ import (
 )
 
 type Interface interface {
-	Execute(ctx context.Context, sig signal.Interface) (signal.Interface, error)
+	Execute(ctx context.Context, sigs []signal.Interface) ([]signal.Interface, error)
 	ID() string
 }

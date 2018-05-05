@@ -10,7 +10,6 @@ import (
 	"github.com/the-anna-project/the-anna-project/network"
 	"github.com/the-anna-project/the-anna-project/peer"
 	"github.com/the-anna-project/the-anna-project/random"
-	"github.com/the-anna-project/the-anna-project/signal"
 )
 
 type Config struct {
@@ -31,7 +30,6 @@ type Object struct {
 
 	alreadyBooted   bool
 	alreadyShutDown bool
-	bufferedSignals map[string]signal.Interface
 	energy          float64
 	id              string
 	mutex           sync.Mutex
@@ -60,7 +58,6 @@ func New(config Config) (*Object, error) {
 
 		alreadyBooted:   false,
 		alreadyShutDown: false,
-		bufferedSignals: map[string]signal.Interface{},
 		energy:          0,
 		id:              "",
 		mutex:           sync.Mutex{},

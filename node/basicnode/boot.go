@@ -46,68 +46,64 @@ func (o *Object) Boot(ctx context.Context) error {
 		}
 	}
 
-	{
-		go func() {
-			for {
-				select {
-				case <-ctx.Done():
-					return
-				case <-o.shutdown:
-					return
-				case <-time.After(oneMinute):
-					peers, err := o.network.SearchInputPeers(ctx, o)
-					if err != nil {
-						o.logger.Log("level", "warning", "message", "searching input peers failed", "stack", fmt.Sprintf("%#v", err))
-					}
-
-					o.mutex.Lock()
-					o.inputPeers = peers
-					o.mutex.Unlock()
+	go func() {
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			case <-o.shutdown:
+				return
+			case <-time.After(oneMinute):
+				peers, err := o.network.SearchInputPeers(ctx, o)
+				if err != nil {
+					o.logger.Log("level", "warning", "message", "searching input peers failed", "stack", fmt.Sprintf("%#v", err))
+					continue
 				}
+
+				o.mutex.Lock()
+				o.inputPeers = peers
+				o.mutex.Unlock()
 			}
-		}()
-	}
+		}
+	}()
 
-	{
-		go func() {
-			for {
-				select {
-				case <-ctx.Done():
-					return
-				case <-o.shutdown:
-					return
-				case <-time.After(oneMinute):
-					peers, err := o.network.SearchOutputPeers(ctx, o)
-					if err != nil {
-						o.logger.Log("level", "warning", "message", "searching output peers failed", "stack", fmt.Sprintf("%#v", err))
-					}
-
-					o.mutex.Lock()
-					o.outputPeers = peers
-					o.mutex.Unlock()
+	go func() {
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			case <-o.shutdown:
+				return
+			case <-time.After(oneMinute):
+				peers, err := o.network.SearchOutputPeers(ctx, o)
+				if err != nil {
+					o.logger.Log("level", "warning", "message", "searching output peers failed", "stack", fmt.Sprintf("%#v", err))
+					continue
 				}
+
+				o.mutex.Lock()
+				o.outputPeers = peers
+				o.mutex.Unlock()
 			}
-		}()
-	}
+		}
+	}()
 
-	{
-		go func() {
-			for {
-				select {
-				case <-ctx.Done():
-					o.Shutdown(ctx)
-				case <-o.shutdown:
-					return
-				case <-time.After(oneMinute):
-					if o.Energy() > 0 {
-						continue
-					}
-
-					o.Shutdown(ctx)
+	go func() {
+		for {
+			select {
+			case <-ctx.Done():
+				o.Shutdown(ctx)
+			case <-o.shutdown:
+				return
+			case <-time.After(oneMinute):
+				if o.Energy() > 0 {
+					continue
 				}
+
+				o.Shutdown(ctx)
 			}
-		}()
-	}
+		}
+	}()
 
 	{
 		o.mutex.Lock()

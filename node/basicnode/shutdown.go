@@ -19,15 +19,15 @@ func (o *Object) Shutdown(ctx context.Context) error {
 	}
 
 	{
-		err = o.network.DeleteNode(ctx, o, o.action)
+		err = o.network.DeleteNode(ctx, o)
 		if err != nil {
 			return microerror.Mask(err)
 		}
-		err = o.network.DeleteInputPeers(ctx, o, o.inputPeers)
+		err = o.network.DeleteAllInputPeers(ctx, o)
 		if err != nil {
 			return microerror.Mask(err)
 		}
-		err = o.network.DeleteOutputPeers(ctx, o, o.outputPeers)
+		err = o.network.DeleteAllOutputPeers(ctx, o)
 		if err != nil {
 			return microerror.Mask(err)
 		}

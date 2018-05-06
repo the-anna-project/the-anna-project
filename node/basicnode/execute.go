@@ -9,11 +9,11 @@ import (
 )
 
 // Execute checks if the node should be activated or not. In case the node is
-// being activated it will update its energy and threshold levels. When this is
-// done the node's action will be executed in case there is any configured. The
-// returned signals indicate eventual action results and decisions of the node.
-// In case the node should not be activated list only containing a stop signal
-// is returned, otherwhise the node returns signals supposed to be dispatched.
+// being activated it will increase its energy level. When this is done the
+// node's action will be executed in case there is any configured. The returned
+// signals indicate eventual action results and decisions of the node. In case
+// the node should not be activated list only containing a stop signal is
+// returned, otherwhise the node returns signals supposed to be dispatched.
 func (o *Object) Execute(ctx context.Context, sigs []signal.Interface) ([]signal.Interface, error) {
 	var err error
 
@@ -24,12 +24,7 @@ func (o *Object) Execute(ctx context.Context, sigs []signal.Interface) ([]signal
 	}
 
 	{
-		err = o.updateEnergy(ctx)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-
-		err = o.updateThreshold(ctx)
+		err = o.increaseEnergy(ctx)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}

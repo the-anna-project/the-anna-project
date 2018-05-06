@@ -7,7 +7,7 @@ import (
 	"github.com/the-anna-project/the-anna-project/peer"
 )
 
-// TODO implement node and action registration
-func (o *Object) RegisterPeers(ctx context.Context, n node.Interface, p []peer.Interface) error {
+// TODO implement DeleteOutputPeers
+func (o *Object) DeleteOutputPeers(ctx context.Context, n node.Interface, p []peer.Interface) error {
 	return nil
 }

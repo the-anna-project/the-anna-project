@@ -15,10 +15,6 @@ type Interface interface {
 	// CreateNode adds shared knowledge about the given node and the given
 	// action to the configured storage.
 	CreateNode(ctx context.Context, n node.Interface) error
-	// DeleteAllInputPeers TODO
-	DeleteAllInputPeers(ctx context.Context, n node.Interface) error
-	// DeleteAllOutputPeers TODO
-	DeleteAllOutputPeers(ctx context.Context, n node.Interface) error
 	// DeleteInputPeers TODO
 	DeleteInputPeers(ctx context.Context, n node.Interface, p []peer.Interface) error
 	// DeleteNode removes shared knowledge about the given node and the given

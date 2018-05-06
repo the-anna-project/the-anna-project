@@ -23,11 +23,25 @@ func (o *Object) Shutdown(ctx context.Context) error {
 		if err != nil {
 			return microerror.Mask(err)
 		}
-		err = o.network.DeleteAllInputPeers(ctx, o)
+	}
+
+	{
+		peers, err := o.network.SearchInputPeers(context.Background(), o)
 		if err != nil {
 			return microerror.Mask(err)
 		}
-		err = o.network.DeleteAllOutputPeers(ctx, o)
+		err = o.network.DeleteInputPeers(ctx, o, peers)
+		if err != nil {
+			return microerror.Mask(err)
+		}
+	}
+
+	{
+		peers, err := o.network.SearchOutputPeers(context.Background(), o)
+		if err != nil {
+			return microerror.Mask(err)
+		}
+		err = o.network.DeleteOutputPeers(ctx, o, peers)
 		if err != nil {
 			return microerror.Mask(err)
 		}

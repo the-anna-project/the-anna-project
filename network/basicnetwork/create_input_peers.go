@@ -12,10 +12,11 @@ import (
 
 // TODO implement CreateInputPeers
 func (o *Object) CreateInputPeers(ctx context.Context, n node.Interface) error {
-	// Decide how many peers should be created.
+	// Decide how many peers should be created and create the desired amount if
+	// possible.
 	var inputPeers map[string]peer.Interface
 	{
-		peerCount, err := o.random.NewFloat64(ctx, 0, 10)
+		peerCount, err := o.random.NewInt(ctx, 0, 10)
 		if err != nil {
 			return microerror.Mask(err)
 		}
@@ -55,6 +56,23 @@ func (o *Object) CreateInputPeers(ctx context.Context, n node.Interface) error {
 
 			if len(inputPeers) == peerCount {
 				break
+			}
+		}
+	}
+
+	// Persist input peer and output peer relations relative to the current node.
+	{
+		for _, p := range inputPeers {
+			err := o.storage.Peer.Input.Create(n.ID(), p.NodeID())
+			if err != nil {
+				return microerror.Mask(err)
+			}
+		}
+
+		for _, p := range inputPeers {
+			err := o.storage.Peer.Output.Create(p.NodeID(), n.ID())
+			if err != nil {
+				return microerror.Mask(err)
 			}
 		}
 	}

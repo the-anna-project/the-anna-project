@@ -5,6 +5,13 @@ import (
 	"github.com/gomodule/redigo/redis"
 )
 
+var executionFailedError = microerror.New("execution failed")
+
+// IsExecutionFailed asserts executionFailedError.
+func IsExecutionFailed(err error) bool {
+	return microerror.Cause(err) == executionFailedError
+}
+
 var invalidConfigError = microerror.New("invalid config")
 
 // IsInvalidConfig asserts invalidConfigError.

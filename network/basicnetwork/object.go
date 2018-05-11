@@ -5,7 +5,6 @@ import (
 	"github.com/giantswarm/micrologger"
 
 	"github.com/the-anna-project/the-anna-project/random"
-	"github.com/the-anna-project/the-anna-project/storage"
 	"github.com/the-anna-project/the-anna-project/storageset"
 )
 
@@ -17,7 +16,7 @@ type Config struct {
 
 type Object struct {
 	logger  micrologger.Logger
-	storage storage.Interface
+	storage storageset.StorageSet
 	random  random.Interface
 }
 
@@ -26,9 +25,9 @@ func New(config Config) (*Object, error) {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Logger must not be empty", config)
 	}
 	{
-		err := s.Storage.Validate()
+		err := config.Storage.Validate()
 		if err == nil {
-			return microerror.Mask(err)
+			return nil, microerror.Mask(err)
 		}
 	}
 	if config.Random == nil {

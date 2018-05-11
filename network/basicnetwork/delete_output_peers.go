@@ -10,7 +10,7 @@ import (
 
 func (o *Object) DeleteOutputPeers(ctx context.Context, node node.Interface, peers []peer.Interface) error {
 	for _, p := range peers {
-		err := o.storage.Peer.Output.Delete(node.ID(), p.NodeID())
+		err := o.storage.Peer.Output.RemoveFromSet(node.ID(), p.NodeID())
 		if err != nil {
 			return microerror.Mask(err)
 		}

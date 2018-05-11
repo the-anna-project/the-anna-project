@@ -65,14 +65,14 @@ func (o *Object) CreateInputPeers(ctx context.Context, node node.Interface) erro
 	// Persist input peer and output peer relations relative to the current node.
 	{
 		for _, p := range inputPeers {
-			err := o.storage.Peer.Input.Create(node.ID(), p.NodeID())
+			err := o.storage.Peer.Input.AddToSet(node.ID(), p.NodeID())
 			if err != nil {
 				return microerror.Mask(err)
 			}
 		}
 
 		for _, p := range inputPeers {
-			err := o.storage.Peer.Output.Create(p.NodeID(), node.ID())
+			err := o.storage.Peer.Output.AddToSet(p.NodeID(), node.ID())
 			if err != nil {
 				return microerror.Mask(err)
 			}

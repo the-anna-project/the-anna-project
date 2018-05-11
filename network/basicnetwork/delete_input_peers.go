@@ -11,7 +11,7 @@ import (
 
 func (o *Object) DeleteInputPeers(ctx context.Context, node node.Interface, peers []peer.Interface) error {
 	for _, p := range peers {
-		err := o.storage.Peer.Input.Delete(node.ID(), p.NodeID())
+		err := o.storage.Peer.Input.RemoveFromSet(node.ID(), p.NodeID())
 		if err != nil {
 			return microerror.Mask(err)
 		}

@@ -8,6 +8,6 @@ import (
 )
 
 // TODO implement SearchOutputPeers
-func (o *Object) SearchOutputPeers(ctx context.Context, n node.Interface) ([]peer.Interface, error) {
+func (o *Object) SearchOutputPeers(ctx context.Context, node node.Interface) ([]peer.Interface, error) {
 	return nil, nil
 }

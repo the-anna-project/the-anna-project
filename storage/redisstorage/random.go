@@ -6,7 +6,7 @@ import (
 	"github.com/gomodule/redigo/redis"
 )
 
-func (o *Object) SearchRandom() (string, error) {
+func (o *Object) Random() (string, error) {
 	var err error
 	var result string
 

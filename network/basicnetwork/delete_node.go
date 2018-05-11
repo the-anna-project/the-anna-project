@@ -7,6 +7,6 @@ import (
 )
 
 // TODO implement DeleteNode
-func (o *Object) DeleteNode(ctx context.Context, n node.Interface) error {
+func (o *Object) DeleteNode(ctx context.Context, node node.Interface) error {
 	return nil
 }

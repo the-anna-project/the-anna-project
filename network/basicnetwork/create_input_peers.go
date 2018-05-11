@@ -8,9 +8,10 @@ import (
 	"github.com/the-anna-project/the-anna-project/node"
 	"github.com/the-anna-project/the-anna-project/peer"
 	"github.com/the-anna-project/the-anna-project/peer/basicpeer"
+	"github.com/the-anna-project/the-anna-project/storage/redisstorage"
 )
 
-func (o *Object) CreateInputPeers(ctx context.Context, n node.Interface) error {
+func (o *Object) CreateInputPeers(ctx context.Context, node node.Interface) error {
 	// Decide how many peers should be created and create the desired amount if
 	// possible.
 	var inputPeers map[string]peer.Interface
@@ -27,8 +28,10 @@ func (o *Object) CreateInputPeers(ctx context.Context, n node.Interface) error {
 		var repeatCount int
 
 		for {
-			nodeID, err := o.storage.Node.SearchRandom()
-			if err != nil {
+			nodeID, err := o.storage.Node.Random()
+			if redisstorage.IsNotFound(err) {
+				break
+			} else if err != nil {
 				return microerror.Mask(err)
 			}
 
@@ -62,14 +65,14 @@ func (o *Object) CreateInputPeers(ctx context.Context, n node.Interface) error {
 	// Persist input peer and output peer relations relative to the current node.
 	{
 		for _, p := range inputPeers {
-			err := o.storage.Peer.Input.Create(n.ID(), p.NodeID())
+			err := o.storage.Peer.Input.Create(node.ID(), p.NodeID())
 			if err != nil {
 				return microerror.Mask(err)
 			}
 		}
 
 		for _, p := range inputPeers {
-			err := o.storage.Peer.Output.Create(p.NodeID(), n.ID())
+			err := o.storage.Peer.Output.Create(p.NodeID(), node.ID())
 			if err != nil {
 				return microerror.Mask(err)
 			}

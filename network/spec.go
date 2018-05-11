@@ -8,12 +8,12 @@ import (
 )
 
 type Interface interface {
-	// CreateInputPeers TODO
-	//
-	// TODO creates output peers implicitly on the other side.
+	// CreateInputPeers creates input peers for the given node based on random
+	// guesses. It also creates output peers implicitly on the other side. This is
+	// because an input peer for one node is an output peer for the other.
 	CreateInputPeers(ctx context.Context, n node.Interface) error
-	// CreateNode adds shared knowledge about the given node and the given
-	// action to the configured storage.
+	// CreateNode adds shared knowledge about the given node and its associated
+	// action.
 	CreateNode(ctx context.Context, n node.Interface) error
 	// DeleteInputPeers TODO
 	DeleteInputPeers(ctx context.Context, n node.Interface, p []peer.Interface) error

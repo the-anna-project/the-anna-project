@@ -14,8 +14,8 @@ import (
 
 type Config struct {
 	// Action is the business logic implementation the node executes when being
-	// activated, if any. Nodes might not be configured with an action when they
-	// only serve signal dispatching purposes within the network graphs.
+	// activated. Nodes might be configured with a no-op action when they only
+	// serve signal dispatching purposes within the network graphs.
 	Action  action.Interface
 	Logger  micrologger.Logger
 	Network network.Interface
@@ -40,6 +40,9 @@ type Object struct {
 }
 
 func New(config Config) (*Object, error) {
+	if config.Action == nil {
+		return nil, microerror.Maskf(invalidConfigError, "%T.Action must not be empty", config)
+	}
 	if config.Logger == nil {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Logger must not be empty", config)
 	}

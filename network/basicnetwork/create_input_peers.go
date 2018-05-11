@@ -10,7 +10,6 @@ import (
 	"github.com/the-anna-project/the-anna-project/peer/basicpeer"
 )
 
-// TODO implement CreateInputPeers
 func (o *Object) CreateInputPeers(ctx context.Context, n node.Interface) error {
 	// Decide how many peers should be created and create the desired amount if
 	// possible.

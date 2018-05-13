@@ -6,22 +6,22 @@ import (
 	"github.com/giantswarm/microerror"
 
 	"github.com/the-anna-project/the-anna-project/node"
-	"github.com/the-anna-project/the-anna-project/peer"
-	"github.com/the-anna-project/the-anna-project/peer/basicpeer"
+	"github.com/the-anna-project/the-anna-project/port"
+	"github.com/the-anna-project/the-anna-project/port/basicport"
 	"github.com/the-anna-project/the-anna-project/storage/redisstorage"
 )
 
-func (o *Object) CreateInputPeers(ctx context.Context, node node.Interface) error {
-	// Decide how many peers should be created and create the desired amount if
+func (o *Object) CreateInputPorts(ctx context.Context, node node.Interface) error {
+	// Decide how many ports should be created and create the desired amount if
 	// possible.
-	var inputPeers map[string]peer.Interface
+	var inputPorts map[string]port.Interface
 	{
-		peerCount, err := o.random.NewInt(ctx, 0, 10)
+		portCount, err := o.random.NewInt(ctx, 0, 10)
 		if err != nil {
 			return microerror.Mask(err)
 		}
 
-		if peerCount == 0 {
+		if portCount == 0 {
 			return nil
 		}
 
@@ -35,16 +35,16 @@ func (o *Object) CreateInputPeers(ctx context.Context, node node.Interface) erro
 				return microerror.Mask(err)
 			}
 
-			c := basicpeer.Config{
+			c := basicport.Config{
 				NodeID: nodeID,
 			}
 
-			p, err := basicpeer.New(c)
+			p, err := basicport.New(c)
 			if err != nil {
 				return microerror.Mask(err)
 			}
 
-			_, ok := inputPeers[p.NodeID()]
+			_, ok := inputPorts[p.NodeID()]
 			if ok {
 				repeatCount++
 				if repeatCount == 3 {
@@ -54,25 +54,25 @@ func (o *Object) CreateInputPeers(ctx context.Context, node node.Interface) erro
 				continue
 			}
 
-			inputPeers[p.NodeID()] = p
+			inputPorts[p.NodeID()] = p
 
-			if len(inputPeers) == peerCount {
+			if len(inputPorts) == portCount {
 				break
 			}
 		}
 	}
 
-	// Persist input peer and output peer relations relative to the current node.
+	// Persist input port and output port relations relative to the current node.
 	{
-		for _, p := range inputPeers {
-			err := o.storage.Peer.Input.AddToSet(node.ID(), p.NodeID())
+		for _, p := range inputPorts {
+			err := o.storage.Port.Input.AddToSet(node.ID(), p.NodeID())
 			if err != nil {
 				return microerror.Mask(err)
 			}
 		}
 
-		for _, p := range inputPeers {
-			err := o.storage.Peer.Output.AddToSet(p.NodeID(), node.ID())
+		for _, p := range inputPorts {
+			err := o.storage.Port.Output.AddToSet(p.NodeID(), node.ID())
 			if err != nil {
 				return microerror.Mask(err)
 			}

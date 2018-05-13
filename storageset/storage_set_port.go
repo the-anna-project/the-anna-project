@@ -5,12 +5,12 @@ import (
 	"github.com/the-anna-project/the-anna-project/storage"
 )
 
-type StorageSetPeer struct {
+type StorageSetPort struct {
 	Input  storage.Interface
 	Output storage.Interface
 }
 
-func (s StorageSetPeer) Validate() error {
+func (s StorageSetPort) Validate() error {
 	if s.Input == nil {
 		return microerror.Maskf(invalidConfigError, "%T.Input must not be empty", s)
 	}

@@ -1,4 +1,4 @@
-package basicpeer
+package basicport
 
 func (o *Object) NodeID() string {
 	o.mutex.Lock()

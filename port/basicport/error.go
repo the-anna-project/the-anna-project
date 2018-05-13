@@ -1,4 +1,4 @@
-package basicpeer
+package basicport
 
 import "github.com/giantswarm/microerror"
 

@@ -4,30 +4,30 @@ import (
 	"context"
 
 	"github.com/the-anna-project/the-anna-project/node"
-	"github.com/the-anna-project/the-anna-project/peer"
+	"github.com/the-anna-project/the-anna-project/port"
 )
 
 type Interface interface {
-	// CreateInputPeers creates input peers for the given node based on random
-	// guesses. It also creates output peers implicitly on the other side. This is
-	// because an input peer for one node is an output peer for the other.
-	CreateInputPeers(ctx context.Context, node node.Interface) error
+	// CreateInputPorts creates input ports for the given node based on random
+	// guesses. It also creates output ports implicitly on the other side. This is
+	// because an input port for one node is an output port for the other.
+	CreateInputPorts(ctx context.Context, node node.Interface) error
 	// CreateNode adds shared knowledge about the given node and its associated
 	// action.
 	CreateNode(ctx context.Context, node node.Interface) error
-	// DeleteInputPeers deletes the given references of input peers from the given
+	// DeleteInputPorts deletes the given references of input ports from the given
 	// node.
-	DeleteInputPeers(ctx context.Context, node node.Interface, peers []peer.Interface) error
+	DeleteInputPorts(ctx context.Context, node node.Interface, ports []port.Interface) error
 	// DeleteNode removes shared knowledge about the given node and the given
 	// action from the configured storage.
 	DeleteNode(ctx context.Context, node node.Interface) error
-	// DeleteOutputPeers deletes the given references of output peers from the
+	// DeleteOutputPorts deletes the given references of output ports from the
 	// given node.
-	DeleteOutputPeers(ctx context.Context, node node.Interface, peers []peer.Interface) error
-	// SearchInputPeers returns the shared knowledge about the peers providing
+	DeleteOutputPorts(ctx context.Context, node node.Interface, ports []port.Interface) error
+	// SearchInputPorts returns the shared knowledge about the ports providing
 	// signals as input for the given node.
-	SearchInputPeers(ctx context.Context, node node.Interface) ([]peer.Interface, error)
-	// SearchOutputPeers returns the shared knowledge about the peers the given
+	SearchInputPorts(ctx context.Context, node node.Interface) ([]port.Interface, error)
+	// SearchOutputPorts returns the shared knowledge about the ports the given
 	// node provides signals as output for.
-	SearchOutputPeers(ctx context.Context, node node.Interface) ([]peer.Interface, error)
+	SearchOutputPorts(ctx context.Context, node node.Interface) ([]port.Interface, error)
 }

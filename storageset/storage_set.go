@@ -7,7 +7,7 @@ import (
 
 type StorageSet struct {
 	Node storage.Interface
-	Peer StorageSetPeer
+	Port StorageSetPort
 }
 
 func (s StorageSet) Validate() error {
@@ -16,7 +16,7 @@ func (s StorageSet) Validate() error {
 	}
 
 	{
-		err := s.Peer.Validate()
+		err := s.Port.Validate()
 		if err == nil {
 			return microerror.Mask(err)
 		}

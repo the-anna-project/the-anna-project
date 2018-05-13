@@ -8,7 +8,7 @@ import (
 
 	"github.com/the-anna-project/the-anna-project/action"
 	"github.com/the-anna-project/the-anna-project/network"
-	"github.com/the-anna-project/the-anna-project/peer"
+	"github.com/the-anna-project/the-anna-project/port"
 	"github.com/the-anna-project/the-anna-project/random"
 )
 
@@ -33,8 +33,8 @@ type Object struct {
 	energy          float64
 	id              string
 	mutex           sync.Mutex
-	inputPeers      []peer.Interface
-	outputPeers     []peer.Interface
+	inputPorts      []port.Interface
+	outputPorts     []port.Interface
 	shutdown        chan struct{}
 	threshold       float64
 }
@@ -64,8 +64,8 @@ func New(config Config) (*Object, error) {
 		energy:          0,
 		id:              "",
 		mutex:           sync.Mutex{},
-		inputPeers:      nil,
-		outputPeers:     nil,
+		inputPorts:      nil,
+		outputPorts:     nil,
 		shutdown:        make(chan struct{}, 1),
 		threshold:       0,
 	}

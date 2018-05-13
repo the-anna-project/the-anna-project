@@ -21,12 +21,12 @@ const (
 //
 //     Registering the node in the network for general awareness.
 //
-//     Creating the node's input peers ones so it can receive signals.
+//     Creating the node's input ports ones so it can receive signals.
 //
-//     Keeping the node's input peers in sync. Input peers might die and go away
+//     Keeping the node's input ports in sync. Input ports might die and go away
 //     but once initialized never increase.
 //
-//     Keeping the node's output peers in sync. Output peers might die and go
+//     Keeping the node's output ports in sync. Output ports might die and go
 //     away or get added during runtime.
 //
 //     Checking the node's energy level continuously. The node naturally decays
@@ -66,7 +66,7 @@ func (o *Object) Boot(ctx context.Context) error {
 			return microerror.Mask(err)
 		}
 
-		err = o.network.CreateInputPeers(ctx, o)
+		err = o.network.CreateInputPorts(ctx, o)
 		if err != nil {
 			return microerror.Mask(err)
 		}
@@ -80,14 +80,14 @@ func (o *Object) Boot(ctx context.Context) error {
 			case <-o.shutdown:
 				return
 			case <-time.After(oneMinute):
-				peers, err := o.network.SearchInputPeers(context.Background(), o)
+				ports, err := o.network.SearchInputPorts(context.Background(), o)
 				if err != nil {
-					o.logger.Log("level", "warning", "message", "searching input peers failed", "stack", fmt.Sprintf("%#v", err))
+					o.logger.Log("level", "warning", "message", "searching input ports failed", "stack", fmt.Sprintf("%#v", err))
 					continue
 				}
 
 				o.mutex.Lock()
-				o.inputPeers = peers
+				o.inputPorts = ports
 				o.mutex.Unlock()
 			}
 		}
@@ -101,14 +101,14 @@ func (o *Object) Boot(ctx context.Context) error {
 			case <-o.shutdown:
 				return
 			case <-time.After(oneMinute):
-				peers, err := o.network.SearchOutputPeers(context.Background(), o)
+				ports, err := o.network.SearchOutputPorts(context.Background(), o)
 				if err != nil {
-					o.logger.Log("level", "warning", "message", "searching output peers failed", "stack", fmt.Sprintf("%#v", err))
+					o.logger.Log("level", "warning", "message", "searching output ports failed", "stack", fmt.Sprintf("%#v", err))
 					continue
 				}
 
 				o.mutex.Lock()
-				o.outputPeers = peers
+				o.outputPorts = ports
 				o.mutex.Unlock()
 			}
 		}

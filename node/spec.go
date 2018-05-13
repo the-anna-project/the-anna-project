@@ -9,6 +9,7 @@ import (
 
 type Interface interface {
 	Action() action.Interface
+	Boot(ctx context.Context) error
 	Execute(ctx context.Context, sigs []signal.Interface) ([]signal.Interface, error)
 	ID() string
 }
